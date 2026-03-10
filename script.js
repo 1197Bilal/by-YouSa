@@ -1,21 +1,13 @@
-// --- by YouSa V2 | Dynamic Sales Logic ---
+// --- by YouSa V3 | Premium Mobile Conversion Logic ---
 
 const activities = [
     "Alguien de Madrid acaba de adquirir una Luxe Champagne Abaya ✨",
     "¡Solo quedan 2 piezas del Earthy Tunic Set en stock! 🔥",
     "Alguien de Barcelona está mirando el Premium Silk Hijab ahora mismo 👀",
     "Nueva colección 2026: 15 personas han añadido hoy piezas a su bolsa 🛍️",
-    "Envío Express confirmado para un pedido en Valencia 🚚"
+    "Envío Express confirmado para un pedido en Valencia 🚚",
+    "¡Reposición de stock! 5 Abayas enviadas a Collado Villalba 📦"
 ];
-
-function initLiveActivities() {
-    setInterval(() => {
-        if (Math.random() > 0.7) { // 30% chance every 10s to show activity
-            const msg = activities[Math.floor(Math.random() * activities.length)];
-            showToast(msg);
-        }
-    }, 10000);
-}
 
 const products = [
     {
@@ -24,8 +16,9 @@ const products = [
         price: 189.00,
         img: 'assets/cat_abaya.png',
         tag: 'BESTSELLER',
-        stock: 'Limited Edition',
-        sizes: ['S', 'M', 'L']
+        stock: 'Agotándose rápido',
+        sizes: ['S', 'M', 'L'],
+        stockPercent: 92
     },
     {
         id: 'hijab-silk-prem',
@@ -33,8 +26,9 @@ const products = [
         price: 45.00,
         img: 'assets/cat_hijab.png',
         tag: 'NEW DROP',
-        stock: 'Selling Fast',
-        sizes: ['One Size']
+        stock: 'Limited stock',
+        sizes: ['One Size'],
+        stockPercent: 65
     },
     {
         id: 'set-coord-earth',
@@ -42,8 +36,9 @@ const products = [
         price: 125.00,
         img: 'assets/cat_sets.png',
         tag: 'MUST HAVE',
-        stock: 'Only 5 left',
-        sizes: ['S', 'M', 'L', 'XL']
+        stock: 'Only 3 left',
+        sizes: ['S', 'M', 'L', 'XL'],
+        stockPercent: 95
     },
     {
         id: 'abaya-kimono-lin',
@@ -51,8 +46,9 @@ const products = [
         price: 95.00,
         img: 'assets/prod_kimono_abaya.png',
         tag: 'SUMMER VIVE',
-        stock: 'Restocked',
-        sizes: ['S', 'M', 'L']
+        stock: 'Restocked!',
+        sizes: ['S', 'M', 'L'],
+        stockPercent: 40
     }
 ];
 
@@ -63,12 +59,13 @@ let currentOptions = { size: '' };
 document.addEventListener('DOMContentLoaded', () => {
     initScrollEffects();
     renderFeed();
-    updateCartDisplay();
-    initAnimateOnScroll();
+    updateCartUI();
     initLiveActivities();
+    initAnimateOnScroll();
+    loadCart();
 });
 
-// --- Dynamic Rendering ---
+// --- UI Engine ---
 
 function renderFeed() {
     const feed = document.getElementById('product-feed');
@@ -77,29 +74,27 @@ function renderFeed() {
     feed.innerHTML = products.map((p, i) => `
         <article class="product-card" data-animate style="transition-delay: ${i * 0.1}s" onclick="openProductModal('${p.id}')">
             <div class="product-img-box">
-                <img src="${p.img}" alt="${p.title}">
-                <div style="position: absolute; top: 1rem; right: 1rem; background: #fff; padding: 4px 10px; font-size: 0.6rem; font-weight: 800; border-radius: 2px;">${p.tag}</div>
+                <img src="${p.img}" alt="${p.title}" loading="lazy">
+                <div style="position: absolute; top: 12px; right: 12px; background: #fff; color:#000; padding: 5px 12px; font-size: 0.6rem; font-weight: 800; text-transform:uppercase; letter-spacing:0.05em; border-radius: 2px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">${p.tag}</div>
             </div>
-            <div style="padding: 1.5rem 0;">
-                <h4 style="font-size: 1.1rem; font-weight: 600;">${p.title}</h4>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-                    <span style="font-weight: 700; color: var(--color-secondary);">${p.price.toFixed(2)}€</span>
-                    <span class="watching-count">Ver Detalles</span>
+            <div style="padding: 1rem 0;">
+                <h4 style="font-weight: 600; margin-bottom: 4px;">${p.title}</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: var(--color-secondary); font-size: 1.1rem;">${p.price.toFixed(2)}€</span>
+                    <span style="font-size: 0.6rem; font-weight: 700; color:#e74c3c;">Visto por 12 personas</span>
                 </div>
-                <div class="sold-out-soon">${p.stock} 🔥</div>
             </div>
         </article>
     `).join('');
 }
 
-// --- Cart System (Side Drawer) ---
+// --- Cart & Drawer ---
 
 function toggleCart() {
     const drawer = document.getElementById('cart-drawer');
     const overlay = document.getElementById('drawer-overlay');
 
-    const isOpen = drawer.classList.contains('open');
-    if (isOpen) {
+    if (drawer.classList.contains('open')) {
         drawer.classList.remove('open');
         overlay.classList.remove('active');
     } else {
@@ -120,29 +115,34 @@ function addToCart() {
 
     cart.push(item);
     saveCart();
-    updateCartDisplay();
+    updateCartUI();
     closeProductModal();
 
-    // Auto-open side cart with a bit of delay for feedback
-    setTimeout(() => toggleCart(), 400);
+    // Feedback hático/visual
+    showToast(`✨ ¡${item.title} añadido a tu bolsa!`);
+
+    setTimeout(() => toggleCart(), 500);
 }
 
 function renderCartItems() {
     const container = document.getElementById('cart-items');
     if (cart.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999; margin-top: 50px;">Tu bolsa está vacía.</p>';
+        container.innerHTML = `<div style="text-align:center; padding: 4rem 1rem;">
+            <p style="color: #999; margin-bottom: 2rem;">Tu bolsa de lujo está esperando piezas exclusivas.</p>
+            <button class="btn btn-black" onclick="toggleCart()" style="padding: 0.8rem 1.5rem;">Seguir Comprando</button>
+        </div>`;
         return;
     }
 
     container.innerHTML = cart.map((item, idx) => `
-        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
-            <img src="${item.img}" style="width: 80px; height: 100px; object-fit: cover;">
+        <div style="display: flex; gap: 1.2rem; margin-bottom: 1.5rem; align-items: center; border-bottom: 1px solid #f5f5f5; padding-bottom: 1rem;">
+            <img src="${item.img}" style="width: 70px; height: 90px; object-fit: cover;">
             <div style="flex: 1;">
-                <h5 style="font-weight: 600;">${item.title}</h5>
-                <p style="font-size: 0.8rem; color: #777;">Talla: ${item.selectedSize}</p>
-                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <h5 style="font-weight: 600; font-size: 0.95rem;">${item.title}</h5>
+                <p style="font-size: 0.75rem; color: #888; margin: 4px 0;">Talla: ${item.selectedSize}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
                     <span style="font-weight: 700;">${item.price.toFixed(2)}€</span>
-                    <button onclick="removeFromCart(${idx})" style="background:none; border:none; text-decoration: underline; font-size: 0.7rem; cursor:pointer;">Eliminar</button>
+                    <button onclick="removeFromCart(${idx})" style="background:none; border:none; text-decoration: underline; font-size: 0.65rem; color: #a00; cursor:pointer;">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -155,11 +155,11 @@ function renderCartItems() {
 function removeFromCart(idx) {
     cart.splice(idx, 1);
     saveCart();
-    updateCartDisplay();
+    updateCartUI();
     renderCartItems();
 }
 
-function updateCartDisplay() {
+function updateCartUI() {
     const counts = document.querySelectorAll('.cart-count');
     counts.forEach(el => el.innerText = cart.length);
 }
@@ -181,8 +181,27 @@ function openProductModal(id) {
         <button class="opt-btn ${size === currentOptions.size ? 'selected' : ''}" onclick="selectSize(this, '${size}')">${size}</button>
     `).join('');
 
+    // Update Sticky Info (Mobile)
+    const stickyTitle = document.getElementById('sticky-title-mobile');
+    if (stickyTitle) stickyTitle.innerText = currentProduct.title;
+    const stickyPrice = document.getElementById('sticky-price-mobile');
+    if (stickyPrice) stickyPrice.innerText = currentProduct.price.toFixed(2) + '€';
+
+    // Show Progress Bar
+    const prog = document.getElementById('modal-stock-progress');
+    if (prog) {
+        prog.style.width = '0%';
+        setTimeout(() => prog.style.width = currentProduct.stockPercent + '%', 100);
+    }
+
     const modal = document.getElementById('product-modal');
     modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Activate Sticky ATC on Mobile
+    if (window.innerWidth <= 768) {
+        document.getElementById('mobile-sticky-atc-container').classList.add('active');
+    }
 }
 
 function selectSize(btn, size) {
@@ -194,9 +213,11 @@ function selectSize(btn, size) {
 
 function closeProductModal() {
     document.getElementById('product-modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('mobile-sticky-atc-container').classList.remove('active');
 }
 
-// --- Strategy: Checkout & Upsell ---
+// --- High Conversion Strategy ---
 
 function checkout() {
     if (cart.length === 0) return;
@@ -204,22 +225,47 @@ function checkout() {
     const total = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
     let itemsStr = cart.map(item => `🛍️ ${item.title} - Talla: ${item.selectedSize} (${item.price.toFixed(2)}€)`).join('%0A');
 
-    // Strategy Trick: Custom high-conversion message
-    const message = `🔥 NUEVA SOLICITUD PREMIUM%0A%0A¡Hola By YouSa! 👋 Me gustaría adquirir estas piezas exclusivas de la colección 2026:%0A%0A${itemsStr}%0A%0A💰 TOTAL: ${total}€%0A%0A📍 Por favor, decidme los pasos para el pago y envío.`;
+    const message = `SOLICITUD DE COMPRA PREMIUM (Web V3)%0A%0A¡Hola By YouSa! 👋 Deseo adquirir estas piezas de la nueva colección 2026:%0A%0A${itemsStr}%0A%0A💰 TOTAL: ${total}€%0A%0A📍 Por favor, enviadme los detalles para el pago y la entrega express.`;
 
     window.open(`https://wa.me/34636745584?text=${message}`, '_blank');
 }
 
-// --- UX & Animations ---
+function initLiveActivities() {
+    setInterval(() => {
+        if (Math.random() > 0.8) {
+            const msg = activities[Math.floor(Math.random() * activities.length)];
+            showToast(msg);
+        }
+    }, 12000);
+}
+
+function showToast(msg) {
+    let toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+        background: #111; color: #fff; padding: 12px 24px; border-radius: 4px;
+        font-size: 0.75rem; font-weight: 600; z-index: 5000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: toast-in 0.5s var(--transition);
+        white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em;
+    `;
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 10px)';
+        toast.style.transition = 'all 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
+}
+
+// --- Smooth System ---
 
 function initScrollEffects() {
     const header = document.querySelector('.site-header');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
+        if (window.scrollY > 80) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
     });
 }
 
@@ -233,11 +279,21 @@ function initAnimateOnScroll() {
     document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
 }
 
-// --- Persistence ---
-function saveCart() { localStorage.setItem('by_yousa_cart', JSON.stringify(cart)); }
+function saveCart() { localStorage.setItem('yousa_v3_cart', JSON.stringify(cart)); }
 function loadCart() {
-    const saved = localStorage.getItem('by_yousa_cart');
-    if (saved) cart = JSON.parse(saved);
+    const saved = localStorage.getItem('yousa_v3_cart');
+    if (saved) { cart = JSON.parse(saved); updateCartUI(); }
 }
 
-loadCart();
+const styleTag = document.createElement('style');
+styleTag.innerHTML = `
+    @keyframes toast-in { 
+        from { opacity: 0; transform: translate(-50%, 20px); }
+        to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+`;
+document.head.appendChild(styleTag);
