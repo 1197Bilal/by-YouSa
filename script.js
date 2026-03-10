@@ -1,5 +1,22 @@
 // --- by YouSa V2 | Dynamic Sales Logic ---
 
+const activities = [
+    "Alguien de Madrid acaba de adquirir una Luxe Champagne Abaya ✨",
+    "¡Solo quedan 2 piezas del Earthy Tunic Set en stock! 🔥",
+    "Alguien de Barcelona está mirando el Premium Silk Hijab ahora mismo 👀",
+    "Nueva colección 2026: 15 personas han añadido hoy piezas a su bolsa 🛍️",
+    "Envío Express confirmado para un pedido en Valencia 🚚"
+];
+
+function initLiveActivities() {
+    setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance every 10s to show activity
+            const msg = activities[Math.floor(Math.random() * activities.length)];
+            showToast(msg);
+        }
+    }, 10000);
+}
+
 const products = [
     {
         id: 'abaya-silk-lux',
@@ -48,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFeed();
     updateCartDisplay();
     initAnimateOnScroll();
+    initLiveActivities();
 });
 
 // --- Dynamic Rendering ---
