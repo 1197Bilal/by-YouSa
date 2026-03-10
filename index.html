@@ -14,16 +14,19 @@
     <!-- Header Mobile Compact -->
     <header class="site-header">
         <a href="/" class="logo">by <span>YouSa.</span></a>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div class="watching-count desktop-only">🔥 42 COMPRANDO</div>
-            <div onclick="toggleCart()" style="position:relative; cursor:pointer; padding:5px;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+        <div class="header-actions">
+            <div class="watching-count desktop-only"
+                style="font-size:11px; font-weight:800; color:var(--color-secondary);">🔥 42 COMPRANDO</div>
+            <div onclick="toggleCart()" style="position:relative; cursor:pointer;" aria-label="Abrir carrito">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
-                <span class="cart-count"
-                    style="position:absolute; top:0; right:0; background:var(--color-secondary); color:#fff; font-size:8px; width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;">0</span>
+                <div class="cart-count"
+                    style="position:absolute; top:-5px; right:-8px; background:var(--color-secondary); color:#fff; font-size:9px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; border:2px solid #fff;">
+                    0</div>
             </div>
         </div>
     </header>
@@ -31,98 +34,141 @@
     <main>
         <!-- Home Hero -->
         <section class="hero">
-            <img src="assets/hero_banner.png" class="hero-img" alt="Luxury Fashion">
+            <img src="assets/hero_banner.png" class="hero-img" alt="Luxury Modest Fashion Collection">
             <div class="hero-content">
-                <span
-                    style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:2px; color:var(--color-accent);">Nueva
-                    Colección</span>
-                <h2 data-animate>Rediseñando la <span>Modestia.</span></h2>
-                <button class="btn" style="width:auto; padding:1rem 2rem;"
+                <p
+                    style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:3px; color:var(--color-accent); margin-bottom:10px;">
+                    New Arrival 2026</p>
+                <h2 data-animate>Elevando la<br><span>Modestia.</span></h2>
+                <button class="btn btn-shine" style="width:auto; padding:1.2rem 2.5rem;"
                     onclick="document.getElementById('shop').scrollIntoView();">Ver Colección</button>
             </div>
         </section>
 
         <!-- Product Grid -->
-        <section id="shop" class="container" style="padding-top:2rem;">
-            <h2 style="font-size:1.8rem;">La <span>Colección</span></h2>
+        <section id="shop" class="container" style="padding-top:3rem;">
+            <div style="margin-bottom:2rem;">
+                <h2 style="font-size:2.2rem; margin-bottom:5px;">Nuestros <span>Imprescindibles</span></h2>
+                <p style="font-size:12px; color:#888; font-weight:500;">Diseños exclusivos de alta costura modesta.</p>
+            </div>
+
             <div id="product-feed" class="product-grid">
-                <!-- Products via JS -->
+                <!-- Products dynamically loaded -->
             </div>
         </section>
     </main>
 
-    <!-- Mobile Navigation Tab Bar -->
+    <!-- Mobile Navigation Tab Bar (Clean & Functional) -->
     <nav class="mobile-nav">
         <a href="/" class="nav-item active">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
-            <span>Inicio</span>
+            <span>INICIO</span>
         </a>
         <a href="#shop" class="nav-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <span>Tienda</span>
+            <span>TIENDA</span>
         </a>
         <a href="javascript:void(0)" class="nav-item" onclick="toggleCart()">
             <div style="position:relative;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                 </svg>
-                <span class="cart-count"
-                    style="position:absolute; top:-5px; right:-8px; background:var(--color-secondary); color:#fff; font-size:8px; width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center;">0</span>
+                <div class="cart-count"
+                    style="position:absolute; top:-5px; right:-8px; background:var(--color-secondary); color:#fff; font-size:8px; width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; border:1px solid #fff;">
+                    0</div>
             </div>
-            <span>Bolsa</span>
+            <span>MI BOLSA</span>
         </a>
     </nav>
 
-    <!-- Full Screen Product Overlay (Mobile App Feel) -->
+    <!-- Full Screen Product Overlay (App Experience) -->
     <div id="product-overlay" class="product-overlay">
-        <button onclick="closeProductDetail()"
-            style="position:fixed; top:15px; right:15px; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.9); border:none; font-size:1.5rem; z-index:1700; box-shadow:0 2px 10px rgba(0,0,0,0.1);">&times;</button>
-        <img id="p-overlay-img" class="p-detail-img" src="" alt="">
-        <div class="p-detail-body">
-            <h2 id="p-overlay-title" style="font-size:2.5rem; margin-bottom:0.5rem;">Title</h2>
-            <div id="p-overlay-price"
-                style="font-size:1.5rem; color:var(--color-secondary); font-weight:700; margin-bottom:1.5rem;">0.00€
-            </div>
+        <button class="close-overlay" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
+        <div id="product-overlay-scrollbox">
+            <img id="p-overlay-img" class="p-detail-img" src="" alt="">
+            <div class="p-detail-content">
+                <div class="watching-badge"><span>🔥</span> <span id="watching-now">12</span> personas mirando esto
+                    ahora</div>
 
-            <p
-                style="font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem;">
-                Tallas Disponibles</p>
-            <div id="p-overlay-sizes" style="display:flex; gap:10px; margin-bottom:2rem;"></div>
+                <h2 id="p-overlay-title" style="font-size:2.8rem; margin-bottom:5px; line-height:1;">Producto</h2>
+                <div id="p-overlay-price"
+                    style="font-size:1.8rem; color:var(--color-secondary); font-weight:800; margin-bottom:2rem;">0.00€
+                </div>
 
-            <div style="background:#f9f9f9; padding:1rem; border-radius:4px;">
-                <p style="font-size:11px; color:#555;">✨ Envío Express 24/48h<br>✨ Calidad de Lujo Garantizada<br>✨
-                    Atención Personalizada vía WhatsApp</p>
+                <div style="margin-bottom:2rem;">
+                    <p
+                        style="font-size:11px; font-weight:800; text-transform:uppercase; color:#999; letter-spacing:1px; margin-bottom:12px;">
+                        Elegir Talla</p>
+                    <div id="p-overlay-sizes" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+                </div>
+
+                <div
+                    style="background:#fffaf0; border:1px dashed var(--color-accent); padding:1.2rem; border-radius:8px; margin-bottom:2rem;">
+                    <p
+                        style="font-size:10px; font-weight:800; color:var(--color-accent); text-transform:uppercase; margin-bottom:8px;">
+                        Estado del Stock</p>
+                    <div class="stock-meter">
+                        <div class="stock-meter-fill" id="stock-meter"></div>
+                    </div>
+                    <p style="font-size:10px; font-weight:600; color:#555; margin-top:5px;">⚠️ Date prisa, este artículo
+                        tiene una demanda inusualmente alta hoy.</p>
+                </div>
+
+                <div class="trust-badges">
+                    <div class="t-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg><span>Pago Seguro</span></div>
+                    <div class="t-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666"
+                            stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5" />
+                        </svg><span>Envío 24/48h</span></div>
+                </div>
             </div>
         </div>
-        <!-- Sticky Purchase Bar -->
+
+        <!-- Fixed Sticky Bar for Overlay -->
         <div class="sticky-atc">
-            <button class="btn" onclick="addToCartOverlay()">Añadir a mi Bolsa 🛍️</button>
+            <button class="btn btn-black btn-shine" onclick="addToCartOverlay()">Añadir a mi Bolsa 🛍️</button>
         </div>
+    </div>
+
+    <!-- Live Sales Notifications -->
+    <div id="live-purchase" class="live-notify">
+        <div style="width:10px; height:10px; background:#2ecc71; border-radius:50%; box-shadow:0 0 10px #2ecc71;"></div>
+        <span id="purchase-msg">Alguien acaba de comprar en Madrid...</span>
     </div>
 
     <!-- App-Style Cart Drawer -->
     <div class="cart-drawer" id="cart-drawer">
-        <div class="drawer-header">
-            <h3 style="font-size:1.2rem;">Tu Bolsa</h3>
+        <div class="cart-header">
+            <h3 style="font-size:1.4rem; font-weight:800; letter-spacing:-0.5px;">Mi Bolsa ❤️</h3>
             <button onclick="toggleCart()"
-                style="background:none; border:none; font-size:2rem; padding:0 10px;">&times;</button>
+                style="background:none; border:none; font-size:2.2rem; color:#000;">&times;</button>
         </div>
-        <div id="cart-items" class="drawer-items">
+        <div id="cart-items" class="cart-body">
             <!-- Items via JS -->
         </div>
-        <div class="drawer-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:1rem; font-weight:700;">
-                <span>Subtotal</span>
+        <div class="cart-footer">
+            <div
+                style="display:flex; justify-content:space-between; margin-bottom:1.2rem; font-weight:800; font-size:1.2rem;">
+                <span>Total</span>
                 <span id="cart-total">0.00€</span>
             </div>
-            <button class="btn" onclick="checkout()">Finalizar pedido por WhatsApp</button>
+            <button class="btn btn-black btn-shine" onclick="checkout()">Finalizar pedido por WhatsApp</button>
+            <p
+                style="font-size:9px; text-align:center; color:#999; margin-top:1.2rem; text-transform:uppercase; letter-spacing:1px; font-weight:600;">
+                Garantía de Satisfacción YouSa 💎</p>
         </div>
     </div>
 
